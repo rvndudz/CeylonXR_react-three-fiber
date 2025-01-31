@@ -85,7 +85,7 @@ export const Card = ({ src, title, description, isComingSoon }) => {
           onMouseMove={handleMouseMove}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          className="border-hsla relative flex w-fit cursor-pointer items-center gap-1 overflow-hidden rounded-full bg-black px-5 py-2 text-xs uppercase text-white/20"
+          className="border-hsla relative flex w-fit cursor-pointer items-center gap-1 overflow-hidden rounded-full bg-black px-5 py-2 text-xs uppercase text-white/90"
         >
           {/* Radial gradient hover effect */}
           <div
@@ -99,14 +99,16 @@ export const Card = ({ src, title, description, isComingSoon }) => {
           {isComingSoon ? (
             <p className="relative z-20">coming soon</p>
           ) : (
-            <p className="relative z-20"> Ready to explore? Let’s dive in! 🚀</p>
+            <p className="relative z-20">
+              {" "}
+              Ready to explore? Let’s dive in! 🚀
+            </p>
           )}
         </div>
       </div>
     </div>
   );
 };
-
 
 const Places = () => (
   <section className="bg-black pb-52">
@@ -116,7 +118,9 @@ const Places = () => (
           Into the Gaussian Splats!
         </p>
         <p className="max-w-md font-circular-web text-lg text-blue-50 opacity-50">
-        Explore stunning digital recreations of real-world sites, enriched with historical insights, interactive storytelling, and multiplayer discovery.
+          Explore stunning digital recreations of real-world sites, enriched
+          with historical insights, interactive storytelling, and multiplayer
+          discovery.
         </p>
       </div>
 
@@ -129,7 +133,7 @@ const Places = () => (
             </>
           }
           description="Nestled in the lush hills of Sri Lanka, Ella is a breathtaking escape filled with misty mountains, scenic tea plantations, and iconic landmarks like Nine Arches Bridge, Little Adam’s Peak, and Ravana Falls. A land of adventure, history, and wonder, Ella invites you to explore its rich culture and natural beauty."
-          isComingSoon = {false}
+          isComingSoon={false}
         />
       </BentoTilt>
 
@@ -143,18 +147,14 @@ const Places = () => (
               </>
             }
             description="Perched on a towering rock, Sigiriya is an ancient fortress filled with stunning frescoes, landscaped gardens, and the iconic Lion’s Paw entrance. A UNESCO World Heritage site, it offers a glimpse into Sri Lanka's rich history and breathtaking views from its summit."
-            isComingSoon = {true}
+            isComingSoon={true}
           />
         </BentoTilt>
 
         <BentoTilt className="bento-tilt_1 row-span-1 ms-32 md:col-span-1 md:ms-0">
           <Card
             src=""
-            title={
-              <>
-                test
-              </>
-            }
+            title={<>test</>}
             description="test purposes"
             isComingSoon
           />
@@ -163,11 +163,7 @@ const Places = () => (
         <BentoTilt className="bento-tilt_1 me-14 md:col-span-1 md:me-0">
           <Card
             src=""
-            title={
-              <>
-                test
-              </>
-            }
+            title={<>test</>}
             description="test purposes"
             isComingSoon
           />
