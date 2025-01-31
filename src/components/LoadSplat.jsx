@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Viewer, PlyLoader, SplatLoader, KSplatLoader  } from '../gaussianSplattingRenderer/index.js';
+import { Viewer, PlyLoader, SplatLoader, KSplatLoader  } from '../GS-Engine/index.js';
 
 const LoadSplat = () => {
   const [file, setFile] = useState(null);
