@@ -1,7 +1,8 @@
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { TiLocationArrow } from "react-icons/ti";
+import { useNavigate } from "react-router-dom";
 
-export const BentoTilt = ({ children, className = "" }) => {
+export const BentoTilt = ({ children, className = "", onClick }) => {
   const [transformStyle, setTransformStyle] = useState("");
   const itemRef = useRef(null);
 
@@ -31,14 +32,18 @@ export const BentoTilt = ({ children, className = "" }) => {
       className={className}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{ transform: transformStyle }}
+      onClick={onClick}
+      style={{
+        transform: transformStyle,
+        cursor: onClick ? "pointer" : "default",
+      }}
     >
       {children}
     </div>
   );
 };
 
-export const Card = ({ src, title, description, isComingSoon }) => {
+export const Card = ({ src, title, description, isComingSoon, onClick }) => {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [hoverOpacity, setHoverOpacity] = useState(0);
   const hoverButtonRef = useRef(null);
@@ -46,7 +51,6 @@ export const Card = ({ src, title, description, isComingSoon }) => {
   const handleMouseMove = (event) => {
     if (!hoverButtonRef.current) return;
     const rect = hoverButtonRef.current.getBoundingClientRect();
-
     setCursorPosition({
       x: event.clientX - rect.left,
       y: event.clientY - rect.top,
@@ -57,7 +61,11 @@ export const Card = ({ src, title, description, isComingSoon }) => {
   const handleMouseLeave = () => setHoverOpacity(0);
 
   return (
-    <div className="relative size-full">
+    <div
+      className="relative size-full"
+      onClick={onClick}
+      style={{ cursor: onClick ? "pointer" : "default" }}
+    >
       {/* Image */}
       <img
         src={src}
@@ -99,10 +107,7 @@ export const Card = ({ src, title, description, isComingSoon }) => {
           {isComingSoon ? (
             <p className="relative z-20">coming soon</p>
           ) : (
-            <p className="relative z-20">
-              {" "}
-              Ready to explore? Let’s dive in! 🚀
-            </p>
+            <p className="relative z-20">Ready to explore? Let’s dive in! 🚀</p>
           )}
         </div>
       </div>
@@ -110,77 +115,92 @@ export const Card = ({ src, title, description, isComingSoon }) => {
   );
 };
 
-const Places = () => (
-  <section className="bg-black pb-52">
-    <div className="container mx-auto px-3 md:px-10">
-      <div className="px-5 py-32">
-        <p className="font-circular-web text-lg text-blue-50">
-          Into the Gaussian Splats!
-        </p>
-        <p className="max-w-md font-circular-web text-lg text-blue-50 opacity-50">
-          Explore stunning digital recreations of real-world sites, enriched
-          with historical insights, interactive storytelling, and multiplayer
-          discovery.
-        </p>
-      </div>
+const Places = () => {
+  const navigate = useNavigate();
+  return (
+    <section className="bg-black pb-52">
+      <div className="container mx-auto px-3 md:px-10">
+        <div className="px-5 py-32">
+          <p className="font-circular-web text-lg text-blue-50">
+            Into the Gaussian Splats!
+          </p>
+          <p className="max-w-md font-circular-web text-lg text-blue-50 opacity-50">
+            Explore stunning digital recreations of real-world sites, enriched
+            with historical insights, interactive storytelling, and multiplayer
+            discovery.
+          </p>
+        </div>
 
-      <BentoTilt className="border-hsla relative mb-7 h-96 w-full overflow-hidden rounded-md md:h-[65vh]">
-        <Card
-          src="img/ella.webp"
-          title={
-            <>
-              Ell<b>a</b>
-            </>
-          }
-          description="Nestled in the lush hills of Sri Lanka, Ella is a breathtaking escape filled with misty mountains, scenic tea plantations, and iconic landmarks like Nine Arches Bridge, Little Adam’s Peak, and Ravana Falls. A land of adventure, history, and wonder, Ella invites you to explore its rich culture and natural beauty."
-          isComingSoon={false}
-        />
-      </BentoTilt>
-
-      <div className="grid h-[135vh] w-full grid-cols-2 grid-rows-3 gap-7">
-        <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1 md:row-span-2">
+        {/* Ella Card */}
+        <BentoTilt
+          className="border-hsla relative mb-7 h-96 w-full overflow-hidden rounded-md md:h-[65vh]"
+          onClick={() => navigate("/ella")}
+        >
           <Card
-            src="img/sigiriya.webp"
+            src="img/ella.webp"
             title={
               <>
-                sigi<b>r</b>iya
+                Ell<b>a</b>
               </>
             }
-            description="Perched on a towering rock, Sigiriya is an ancient fortress filled with stunning frescoes, landscaped gardens, and the iconic Lion’s Paw entrance. A UNESCO World Heritage site, it offers a glimpse into Sri Lanka's rich history and breathtaking views from its summit."
-            isComingSoon={true}
+            description="Nestled in the lush hills of Sri Lanka, Ella is a breathtaking escape filled with misty mountains, scenic tea plantations, and iconic landmarks like Nine Arches Bridge, Little Adam’s Peak, and Ravana Falls. A land of adventure, history, and wonder, Ella invites you to explore its rich culture and natural beauty."
+            isComingSoon={false}
           />
         </BentoTilt>
 
-        <BentoTilt className="bento-tilt_1 row-span-1 ms-32 md:col-span-1 md:ms-0">
-          <Card
-            src=""
-            title={<>test</>}
-            description="test purposes"
-            isComingSoon
-          />
-        </BentoTilt>
+        <div className="grid h-[135vh] w-full grid-cols-2 grid-rows-3 gap-7">
+          <BentoTilt
+            className="bento-tilt_1 row-span-1 md:col-span-1 md:row-span-2"
+            onClick={() => navigate("/sigiriya")}
+          >
+            <Card
+              src="img/sigiriya.webp"
+              title={
+                <>
+                  sigi<b>r</b>iya
+                </>
+              }
+              description="Perched on a towering rock, Sigiriya is an ancient fortress filled with stunning frescoes, landscaped gardens, and the iconic Lion’s Paw entrance. A UNESCO World Heritage site, it offers a glimpse into Sri Lanka's rich history and breathtaking views from its summit."
+              isComingSoon={true} // mark as coming soon if needed.
+            />
+          </BentoTilt>
 
-        <BentoTilt className="bento-tilt_1 me-14 md:col-span-1 md:me-0">
-          <Card
-            src=""
-            title={<>test</>}
-            description="test purposes"
-            isComingSoon
-          />
-        </BentoTilt>
+          <BentoTilt
+            className="bento-tilt_1 row-span-1 ms-32 md:col-span-1 md:ms-0"
+            onClick={() => navigate("/test")}
+          >
+            <Card
+              src="img/test.webp"
+              title={<>test</>}
+              description="test purposes"
+              isComingSoon={true}
+            />
+          </BentoTilt>
 
-        <BentoTilt className="bento-tilt_2">
-          <div className="flex size-full flex-col justify-between bg-blue-300 p-5">
-            <h1 className="bento-title special-font max-w-64 text-black">
-              M<b>o</b>re co<b>m</b>ing s<b>o</b>on.
-            </h1>
+          <BentoTilt
+            className="bento-tilt_1 me-14 md:col-span-1 md:me-0"
+            onClick={() => navigate("/test2")}
+          >
+            <Card
+              src="img/test2.webp"
+              title={<>test</>}
+              description="test purposes"
+              isComingSoon={true}
+            />
+          </BentoTilt>
 
-            <TiLocationArrow className="m-5 scale-[5] self-end" />
-          </div>
-        </BentoTilt>
+          <BentoTilt className="bento-tilt_2">
+            <div className="flex size-full flex-col justify-between bg-blue-300 p-5">
+              <h1 className="bento-title special-font max-w-64 text-black">
+                M<b>o</b>re co<b>m</b>ing s<b>o</b>on.
+              </h1>
+              <TiLocationArrow className="m-5 scale-[5] self-end" />
+            </div>
+          </BentoTilt>
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default Places;
