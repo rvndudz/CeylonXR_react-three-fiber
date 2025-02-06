@@ -4,7 +4,7 @@ import KSplatViewer from "../KSplatViewer";
 
 const sceneConfigMapping = {
   ella: {
-    filePath: "/models/ella.ksplat",
+    filePath: "/ella.ksplat",
     alphaRemovalThreshold: 10,
     antialiased: true,
     cameraUp: [0, -1, 0],
@@ -14,7 +14,7 @@ const sceneConfigMapping = {
     viewerOptions: {},
   },
   sigiriya: {
-    filePath: "/models/sigiriya.ksplat",
+    filePath: "/ella.ksplat",
     alphaRemovalThreshold: 10,
     antialiased: false,
     cameraUp: [0, -1, 0],

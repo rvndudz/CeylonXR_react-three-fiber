@@ -46,8 +46,17 @@ const KSplatViewer = ({
       return;
     }
 
-    // Load the file from the public folder using fetch.
-    fetch(filePath)
+    // If in development, replace S3_BASE_URL with '/models'.
+    // Otherwise, use the S3 base URL from env.
+    const baseUrl =
+      import.meta.env.MODE === "development"
+        ? "/models"
+        : import.meta.env.VITE_S3_BASE_URL;
+
+    const fullUrl = `${baseUrl}${filePath}`;
+
+    // Load the file
+    fetch(fullUrl)
       .then((res) => {
         if (!res.ok) {
           throw new Error(`Failed to fetch file: ${filePath}`);
