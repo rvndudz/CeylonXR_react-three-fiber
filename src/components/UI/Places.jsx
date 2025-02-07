@@ -138,11 +138,7 @@ const Places = () => {
         >
           <Card
             src="img/ella.webp"
-            title={
-              <>
-                Ell<b>a</b>
-              </>
-            }
+            title={<>Ella</>}
             description="Nestled in the lush hills of Sri Lanka, Ella is a breathtaking escape filled with misty mountains, scenic tea plantations, and iconic landmarks like Nine Arches Bridge, Little Adam’s Peak, and Ravana Falls. A land of adventure, history, and wonder, Ella invites you to explore its rich culture and natural beauty."
             isComingSoon={false}
           />
@@ -155,11 +151,7 @@ const Places = () => {
           >
             <Card
               src="img/sigiriya.webp"
-              title={
-                <>
-                  sigi<b>r</b>iya
-                </>
-              }
+              title={<>sigiriya</>}
               description="Perched on a towering rock, Sigiriya is an ancient fortress filled with stunning frescoes, landscaped gardens, and the iconic Lion’s Paw entrance. A UNESCO World Heritage site, it offers a glimpse into Sri Lanka's rich history and breathtaking views from its summit."
               isComingSoon={true} // mark as coming soon if needed.
             />
@@ -192,7 +184,7 @@ const Places = () => {
           <BentoTilt className="bento-tilt_2">
             <div className="flex size-full flex-col justify-between bg-blue-300 p-5">
               <h1 className="bento-title special-font max-w-64 text-black">
-                M<b>o</b>re co<b>m</b>ing s<b>o</b>on.
+                More coming soon.
               </h1>
               <TiLocationArrow className="m-5 scale-[5] self-end" />
             </div>

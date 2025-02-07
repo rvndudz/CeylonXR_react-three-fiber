@@ -72,14 +72,12 @@ const Hero = () => {
         </div>
 
         <h1 className="special-font hero-heading absolute bottom-5 right-5 z-40 text-blue-75">
-          X<b>R</b>
+          XR
         </h1>
 
         <div className="absolute left-0 top-0 z-40 size-full">
           <div className="mt-24 px-5 sm:px-10">
-            <h1 className="special-font hero-heading text-blue-100">
-              ceylo<b>n</b>
-            </h1>
+            <h1 className="special-font hero-heading text-blue-100">ceylon</h1>
 
             {/* <p className="mb-5 max-w-64 font-robert-regular text-blue-100">
               Enter the Metagame Layer <br /> Unleash the Play Economy
@@ -96,7 +94,7 @@ const Hero = () => {
       </div>
 
       <h1 className="special-font hero-heading absolute bottom-5 right-5 text-black">
-        X<b>R</b>
+        XR
       </h1>
     </div>
   );
