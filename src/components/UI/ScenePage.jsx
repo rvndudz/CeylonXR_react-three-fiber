@@ -14,9 +14,14 @@ const sceneConfigMapping = {
     sphericalHarmonicsDegree: 2,
     viewerOptions: {},
     doYouKnowTexts: [
-      "Ella was named after a famous explorer",
-      "The architecture here dates back to the 12th century",
-      "Local legends speak of hidden treasures in the area",
+      "The Nine Arches Bridge was built entirely without steel, using bricks, cement, and stone",
+      "This iconic bridge was constructed during British colonial rule in Sri Lanka, completed in 1921",
+      "The bridge stands at 24 meters high and spans 91 meters across a lush jungle valley",
+      "It is also known as the 'Bridge in the Sky' due to the breathtaking views surrounding it",
+      "During World War I, steel intended for the bridge was redirected to the war effort, so local materials were used instead",
+      "The bridge is part of the railway line connecting Colombo to Badulla, one of the most scenic train rides in the world",
+      "Local legend says the construction was led by a Sri Lankan named P.K. Appuhami after British engineers abandoned the project",
+      "The best times to see the train crossing the bridge are in the morning and afternoon, making it a favorite photography spot",
     ],
   },
   sigiriya: {
