@@ -5,40 +5,28 @@ import {
   SplatLoader,
   KSplatLoader,
 } from "../GS-Engine/index.js";
+import LoadingScreen from "./UI/LoadingScreen";
 
-/**
- * KSplatViewer is a React component that:
- * - Loads a file (e.g., a .ksplat file) from the public folder via its URL.
- * - Uses one of the provided loaders (PlyLoader, SplatLoader, or KSplatLoader) to process the file.
- * - Configures and starts a Viewer instance with the passed-in options.
- *
- * Props:
- * - filePath (string): The URL (relative to public/) of the file to load (e.g., "/models/model.ksplat").
- * - alphaRemovalThreshold (number): The threshold value (1–255) for alpha removal.
- * - antialiased (boolean): Whether to enable antialiasing.
- * - cameraUp (array of numbers): A 3-element array for the camera up vector (e.g., [0, 1, 0]).
- * - cameraPosition (array of numbers): A 3-element array for the initial camera position.
- * - cameraLookAt (array of numbers): A 3-element array for the camera look-at vector.
- * - sphericalHarmonicsDegree (number): The degree for spherical harmonics (0, 1, or 2).
- * - loaderType (optional string): Force a specific loader ('ply', 'splat', or 'ksplat'). If not provided, the loader is chosen based on the file extension.
- * - viewerOptions (object): Any extra options to pass into the Viewer constructor.
- * - onError (function): A callback to notify errors.
- */
 const KSplatViewer = ({
-  filePath, // e.g., "/models/myModel.ksplat"
+  filePath,
   alphaRemovalThreshold = 1,
   antialiased = false,
   cameraUp = [0, 1, 0],
   cameraPosition = [0, 1, 0],
   cameraLookAt = [1, 0, 0],
   sphericalHarmonicsDegree = 0,
-  loaderType, // Optional: 'ply', 'splat', or 'ksplat'
+  loaderType,
   viewerOptions = {},
   onError,
+  placeName,
+  doYouKnowTexts,
 }) => {
-  // A ref to hold the container div that the viewer will render into.
   const containerRef = useRef(null);
   const [viewer, setViewer] = useState(null);
+  const [progress, setProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadedSize, setLoadedSize] = useState(0);
+  const [totalSize, setTotalSize] = useState(0);
 
   useEffect(() => {
     if (!filePath) {
@@ -46,29 +34,57 @@ const KSplatViewer = ({
       return;
     }
 
-    // If in development, replace S3_BASE_URL with '/models'.
-    // Otherwise, use the S3 base URL from env.
     const baseUrl =
       import.meta.env.MODE === "development"
-        ? "/models"
+        ? import.meta.env.VITE_S3_BASE_URL
         : import.meta.env.VITE_S3_BASE_URL;
 
     const fullUrl = `${baseUrl}${filePath}`;
 
-    // Load the file
     fetch(fullUrl)
       .then((res) => {
         if (!res.ok) {
           throw new Error(`Failed to fetch file: ${filePath}`);
         }
-        return res.arrayBuffer();
+        const contentLength = res.headers.get("Content-Length");
+        // If no Content-Length header, fall back without progress tracking.
+        if (!contentLength) {
+          return res.arrayBuffer();
+        }
+        const total = parseInt(contentLength, 10);
+        setTotalSize(total);
+        let loaded = 0;
+
+        const reader = res.body.getReader();
+        const chunks = [];
+
+        const pump = () =>
+          reader.read().then(({ done, value }) => {
+            if (done) {
+              return;
+            }
+            loaded += value.length;
+            setLoadedSize(loaded);
+            setProgress(loaded / total);
+            chunks.push(value);
+            return pump();
+          });
+
+        return pump().then(() => {
+          const arrayBuffer = new Uint8Array(loaded);
+          let offset = 0;
+          for (const chunk of chunks) {
+            arrayBuffer.set(chunk, offset);
+            offset += chunk.length;
+          }
+          return arrayBuffer.buffer;
+        });
       })
       .then((arrayBuffer) => {
         // Determine the file extension.
         const extension = filePath.split(".").pop().toLowerCase();
         let splatBufferPromise;
 
-        // Choose the loader based on the provided loaderType prop or file extension.
         if (loaderType === "ply" || extension === "ply") {
           splatBufferPromise = PlyLoader.loadFromFileData(
             arrayBuffer,
@@ -88,7 +104,6 @@ const KSplatViewer = ({
           extension === "ksplat" ||
           !loaderType
         ) {
-          // Default to KSplatLoader if no loaderType is provided.
           splatBufferPromise = KSplatLoader.loadFromFileData(
             arrayBuffer,
             alphaRemovalThreshold,
@@ -102,7 +117,7 @@ const KSplatViewer = ({
         return splatBufferPromise;
       })
       .then((splatBuffer) => {
-        // Initialize the viewer, passing in the container reference and configuration props.
+        // Initialize the viewer.
         const viewerInstance = new Viewer({
           container: containerRef.current,
           cameraUp,
@@ -114,7 +129,6 @@ const KSplatViewer = ({
           ...viewerOptions,
         });
 
-        // Add the loaded splat buffer and start the viewer.
         return viewerInstance
           .addSplatBuffers(
             [splatBuffer],
@@ -123,6 +137,9 @@ const KSplatViewer = ({
           .then(() => {
             viewerInstance.start();
             setViewer(viewerInstance);
+            // Loading is complete.
+            setIsLoading(false);
+            setProgress(1);
           });
       })
       .catch((error) => {
@@ -130,13 +147,11 @@ const KSplatViewer = ({
         onError && onError(error.message);
       });
 
-    // Optional cleanup: dispose the viewer instance on component unmount.
     return () => {
       if (viewer && viewer.dispose) {
         viewer.dispose();
       }
     };
-    // Include all the props that, when changed, require reloading.
   }, [
     filePath,
     alphaRemovalThreshold,
@@ -149,8 +164,23 @@ const KSplatViewer = ({
     viewerOptions,
   ]);
 
-  // Render only the container for the viewer.
-  return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />;
+  return (
+    <div style={{ width: "100%", height: "100%", position: "relative" }}>
+      {/* Main container for 3D viewer */}
+      <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
+
+      {/* Show overlay loading screen if still loading */}
+      {isLoading && (
+        <LoadingScreen
+          progress={progress}
+          placeName={placeName || "Loading..."}
+          doYouKnowTexts={doYouKnowTexts || []}
+          loadedSize={loadedSize}
+          totalSize={totalSize}
+        />
+      )}
+    </div>
+  );
 };
 
 export default KSplatViewer;

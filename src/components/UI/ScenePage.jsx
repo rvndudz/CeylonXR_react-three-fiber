@@ -4,16 +4,23 @@ import KSplatViewer from "../KSplatViewer";
 
 const sceneConfigMapping = {
   ella: {
+    placeName: "Ella",
     filePath: "/ella.ksplat",
     alphaRemovalThreshold: 10,
     antialiased: true,
-    cameraUp: [0, -1, 0],
-    cameraPosition: [-3.99198, -6.83456, -0.16008],
-    cameraLookAt: [0, 0, 0],
+    cameraUp: [-0.13537, -0.98928, -0.05483],
+    cameraPosition: [-2.10205, -5.5146, -0.96031],
+    cameraLookAt: [3.16803, -2.51469, 2.81781],
     sphericalHarmonicsDegree: 2,
     viewerOptions: {},
+    doYouKnowTexts: [
+      "Ella was named after a famous explorer",
+      "The architecture here dates back to the 12th century",
+      "Local legends speak of hidden treasures in the area",
+    ],
   },
   sigiriya: {
+    placeName: "Sigiriya",
     filePath: "/ella.ksplat",
     alphaRemovalThreshold: 10,
     antialiased: false,
@@ -22,6 +29,10 @@ const sceneConfigMapping = {
     cameraLookAt: [2.26601, -3.31786, 1.17009],
     sphericalHarmonicsDegree: 1,
     viewerOptions: {},
+    doYouKnowTexts: [
+      "Sigiriya is known as the Lion Rock",
+      "It served as a royal palace in ancient times",
+    ],
   },
   // Add more scene configurations as needed.
 };
@@ -37,16 +48,10 @@ const ScenePage = () => {
   }
 
   return (
-    <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
+    <div>
       {/* Back button to return to main page */}
       <button
-        style={{
-          position: "absolute",
-          top: "20px",
-          right: "20px",
-          zIndex: 1000,
-          padding: "8px 12px",
-        }}
+        className="absolute top-5 right-5 z-[1000] px-3 py-2 bg-blue-500 text-white rounded-lg shadow-lg hover:bg-blue-600 transition-colors"
         onClick={() => navigate("/")}
       >
         Back
