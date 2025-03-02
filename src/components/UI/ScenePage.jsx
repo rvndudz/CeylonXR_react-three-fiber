@@ -2,10 +2,13 @@ import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import KSplatViewer from "../KSplatViewer";
 
+const ellaURL = "https://ceylonxr.s3.eu-north-1.amazonaws.com/ella.ksplat";
+const sigiriyaUrl = "https://ceylonxr.s3.eu-north-1.amazonaws.com/sigiriya.ksplat";
+
 const sceneConfigMapping = {
   ella: {
     placeName: "Ella",
-    filePath: "/ella.ksplat",
+    filePath: ellaURL,
     alphaRemovalThreshold: 10,
     antialiased: true,
     cameraUp: [-0.13537, -0.98928, -0.05483],
@@ -26,7 +29,7 @@ const sceneConfigMapping = {
   },
   sigiriya: {
     placeName: "Sigiriya",
-    filePath: "/ella.ksplat",
+    filePath: sigiriyaUrl,
     alphaRemovalThreshold: 10,
     antialiased: false,
     cameraUp: [0, -1, 0],

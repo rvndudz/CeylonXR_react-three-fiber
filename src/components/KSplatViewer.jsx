@@ -36,7 +36,8 @@ const KSplatViewer = ({
 
     const baseUrl =
       import.meta.env.MODE === "development"
-        ? "/models"
+        // ? "/models"
+        ? ""
         : import.meta.env.VITE_S3_BASE_URL;
 
     const fullUrl = `${baseUrl}${filePath}`;
