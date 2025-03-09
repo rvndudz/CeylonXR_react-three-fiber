@@ -39,6 +39,21 @@ const sceneConfigMapping = {
       "It served as a royal palace in ancient times",
     ],
   },
+  test: {
+    placeName: "test",
+    filePath: "/test.ksplat",
+    alphaRemovalThreshold: 10,
+    antialiased: false,
+    cameraUp: [0, -1, 0],
+    cameraPosition: [20, 20, 20],
+    cameraLookAt: [2.26601, -3.31786, 1.17009],
+    sphericalHarmonicsDegree: 1,
+    viewerOptions: {},
+    doYouKnowTexts: [
+      "Sigiriya is known as the Lion Rock",
+      "It served as a royal palace in ancient times",
+    ],
+  },
   // Add more scene configurations as needed.
 };
 
