@@ -41,7 +41,7 @@ const sceneConfigMapping = {
   },
   test: {
     placeName: "test",
-    filePath: "/test.ksplat",
+    filePath: "/test3.ksplat",
     alphaRemovalThreshold: 10,
     antialiased: false,
     cameraUp: [0, -1, 0],
