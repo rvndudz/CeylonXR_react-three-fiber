@@ -1,185 +1,60 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  Viewer,
-  PlyLoader,
-  SplatLoader,
-  KSplatLoader,
-} from "../GS-Engine/index.js";
-import LoadingScreen from "./UI/LoadingScreen";
+import React, { useEffect } from "react";
+import { Viewer, KSplatLoader } from "../GS-Engine";
 
-const KSplatViewer = ({
-  filePath,
-  alphaRemovalThreshold = 1,
-  antialiased = false,
-  cameraUp = [0, 1, 0],
-  cameraPosition = [0, 1, 0],
-  cameraLookAt = [1, 0, 0],
-  sphericalHarmonicsDegree = 0,
-  loaderType,
-  viewerOptions = {},
-  onError,
-  placeName,
-  doYouKnowTexts,
-}) => {
-  const containerRef = useRef(null);
-  const [viewer, setViewer] = useState(null);
-  const [progress, setProgress] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadedSize, setLoadedSize] = useState(0);
-  const [totalSize, setTotalSize] = useState(0);
-
+const KSplatViewer = () => {
   useEffect(() => {
-    if (!filePath) {
-      onError && onError("No file path provided");
-      return;
-    }
+    const filePath = "models/test3.ksplat";
+    const alphaRemovalThreshold = 10;
+    const antialiased = false;
+    const cameraUp = [0, -1, 0];
+    const cameraPosition = [2.16031, -1.03819, 2.38419];
+    const cameraLookAt = [-10.24165, 2.29482, -10.74862];
+    const sphericalHarmonicsDegree = 1;
 
-    const baseUrl =
-      import.meta.env.MODE === "development"
-        ? "/models"
-        : import.meta.env.VITE_S3_BASE_URL;
-
-    const fullUrl = `${baseUrl}${filePath}`;
-
-    fetch(fullUrl)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Failed to fetch file: ${filePath}`);
+    fetch(filePath)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to load file: ${response.statusText}`);
         }
-        const contentLength = res.headers.get("Content-Length");
-        // If no Content-Length header, fall back without progress tracking.
-        if (!contentLength) {
-          return res.arrayBuffer();
-        }
-        const total = parseInt(contentLength, 10);
-        setTotalSize(total);
-        let loaded = 0;
-
-        const reader = res.body.getReader();
-        const chunks = [];
-
-        const pump = () =>
-          reader.read().then(({ done, value }) => {
-            if (done) {
-              return;
-            }
-            loaded += value.length;
-            setLoadedSize(loaded);
-            setProgress(loaded / total);
-            chunks.push(value);
-            return pump();
-          });
-
-        return pump().then(() => {
-          const arrayBuffer = new Uint8Array(loaded);
-          let offset = 0;
-          for (const chunk of chunks) {
-            arrayBuffer.set(chunk, offset);
-            offset += chunk.length;
-          }
-          return arrayBuffer.buffer;
-        });
+        return response.arrayBuffer();
       })
-      .then((arrayBuffer) => {
-        // Determine the file extension.
-        const extension = filePath.split(".").pop().toLowerCase();
-        let splatBufferPromise;
-
-        if (loaderType === "ply" || extension === "ply") {
-          splatBufferPromise = PlyLoader.loadFromFileData(
-            arrayBuffer,
-            alphaRemovalThreshold,
-            0,
-            sphericalHarmonicsDegree
-          );
-        } else if (loaderType === "splat" || extension === "splat") {
-          splatBufferPromise = SplatLoader.loadFromFileData(
-            arrayBuffer,
-            alphaRemovalThreshold,
-            0,
-            sphericalHarmonicsDegree
-          );
-        } else if (
-          loaderType === "ksplat" ||
-          extension === "ksplat" ||
-          !loaderType
-        ) {
-          splatBufferPromise = KSplatLoader.loadFromFileData(
-            arrayBuffer,
-            alphaRemovalThreshold,
-            0,
-            sphericalHarmonicsDegree
-          );
-        } else {
-          throw new Error(`Unsupported file extension: ${extension}`);
-        }
-
-        return splatBufferPromise;
-      })
+      .then((arrayBuffer) =>
+        KSplatLoader.loadFromFileData(
+          arrayBuffer,
+          alphaRemovalThreshold,
+          0, // color offset (if any)
+          sphericalHarmonicsDegree
+        )
+      )
       .then((splatBuffer) => {
-        // Initialize the viewer.
-        const viewerInstance = new Viewer({
-          container: containerRef.current,
-          cameraUp,
+        const viewer = new Viewer({
+          cameraUp: cameraUp,
           initialCameraPosition: cameraPosition,
           initialCameraLookAt: cameraLookAt,
           halfPrecisionCovariancesOnGPU: false,
-          antialiased,
-          sphericalHarmonicsDegree,
-          ...viewerOptions,
+          antialiased: antialiased,
+          sphericalHarmonicsDegree: sphericalHarmonicsDegree,
         });
 
-        return viewerInstance
+        viewer
           .addSplatBuffers(
             [splatBuffer],
             [{ splatAlphaRemovalThreshold: alphaRemovalThreshold }]
           )
           .then(() => {
-            viewerInstance.start();
-            setViewer(viewerInstance);
-            // Loading is complete.
-            setIsLoading(false);
-            setProgress(1);
+            viewer.start();
           });
       })
       .catch((error) => {
-        console.error(error);
-        onError && onError(error.message);
+        console.error("Error loading .ksplat file:", error);
       });
-
-    return () => {
-      if (viewer && viewer.dispose) {
-        viewer.dispose();
-      }
-    };
-  }, [
-    filePath,
-    alphaRemovalThreshold,
-    antialiased,
-    cameraUp,
-    cameraPosition,
-    cameraLookAt,
-    sphericalHarmonicsDegree,
-    loaderType,
-    viewerOptions,
-  ]);
+  }, []);
 
   return (
-    <div style={{ width: "100%", height: "100%", position: "relative" }}>
-      {/* Main container for 3D viewer */}
-      <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
-
-      {/* Show overlay loading screen if still loading */}
-      {isLoading && (
-        <LoadingScreen
-          progress={progress}
-          placeName={placeName || "Loading..."}
-          doYouKnowTexts={doYouKnowTexts || []}
-          loadedSize={loadedSize}
-          totalSize={totalSize}
-        />
-      )}
-    </div>
+    <div
+      id="viewer-container"
+      style={{ width: "100%", height: "100%", position: "relative" }}
+    />
   );
 };
 
