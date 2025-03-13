@@ -40,6 +40,9 @@ const CONSECUTIVE_RENDERED_FRAMES_FOR_FPS_CALCULATION = 60;
 export class Viewer {
 
     constructor(options = {}) {
+        this.controls = null;
+    this.character = null;
+
         // The natural 'up' vector for viewing the scene (only has an effect when used with orbit controls and
         // when the viewer uses its own camera).
         if (!options.cameraUp) options.cameraUp = [0, 1, 0];
@@ -286,8 +289,12 @@ export class Viewer {
         this.setupRenderer();
         this.setupWebXR();
         this.threeScene = this.threeScene || new THREE.Scene();
-        this.setupCustomControls(); 
-        this.setupEventHandlers();
+// Now safe to do custom controls that rely on this.threeScene
+this.setupCustomControls(); 
+
+// Now do event handlers
+this.setupEventHandlers();
+
 
         this.sceneHelper = new SceneHelper(this.threeScene);
         this.sceneHelper.setupMeshCursor();
@@ -527,7 +534,6 @@ export class Viewer {
             this.renderer.getSize(outDimensions);
         }
     }
-    
     static setCameraPositionFromZoom = function() {
 
         const tempVector = new THREE.Vector3();
