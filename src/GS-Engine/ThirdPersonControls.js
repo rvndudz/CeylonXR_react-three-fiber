@@ -119,7 +119,7 @@ export class ThirdPersonControls {
     this.mouse.lastY = event.clientY;
 
     // Adjust yaw/pitch based on mouse movement
-    const rotSpeed = 0.005; // mouse sensitivity
+    const rotSpeed = 0.0045; // mouse sensitivity
     this.yaw -= deltaX * rotSpeed;
     this.pitch -= deltaY * rotSpeed;
 
