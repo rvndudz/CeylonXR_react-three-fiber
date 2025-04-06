@@ -121,7 +121,7 @@ export class ThirdPersonControls {
     // Adjust yaw/pitch based on mouse movement
     const rotSpeed = 0.005; // mouse sensitivity
     this.yaw -= deltaX * rotSpeed;
-    this.pitch -= deltaY * rotSpeed;
+    this.pitch += deltaY * rotSpeed;
 
     // Clamp pitch so camera doesn't flip
     this.pitch = Math.max(this.pitchMin, Math.min(this.pitchMax, this.pitch));
@@ -142,10 +142,10 @@ export class ThirdPersonControls {
       this.character.moveForward(-this.character.moveSpeed * deltaTime);
     }
     if (this.keys.left) {
-      this.character.turn(this.character.turnSpeed * deltaTime);
+      this.character.turn(-this.character.turnSpeed * deltaTime);
     }
     if (this.keys.right) {
-      this.character.turn(-this.character.turnSpeed * deltaTime);
+      this.character.turn(this.character.turnSpeed * deltaTime);
     }
 
     // 2) Update camera to orbit around character based on yaw/pitch
@@ -177,7 +177,7 @@ export class ThirdPersonControls {
 
     // Aim at the character’s position (slightly above to see the top)
     const lookAtPos = new THREE.Vector3().copy(this.character.group.position);
-    lookAtPos.y += 1.0;
+    lookAtPos.y += 0.9; // Adjust this value to look slightly above the character's head
 
     this.camera.lookAt(lookAtPos);
   }
