@@ -2,8 +2,14 @@ import React, { useEffect } from "react";
 import { Viewer, KSplatLoader } from "../GS-Engine";
 
 const KSplatViewer = () => {
+  const file = "/test3.ksplat";
+  const baseUrl =
+    import.meta.env.MODE === "development"
+      ? "/models"
+      : import.meta.env.VITE_S3_BASE_URL;
+
   useEffect(() => {
-    const filePath = "models/test3.ksplat";
+    const filePath = `${baseUrl}${file}`;
     const alphaRemovalThreshold = 10;
     const antialiased = false;
     const cameraUp = [0, -1, 0];
