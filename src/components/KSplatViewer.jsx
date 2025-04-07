@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Viewer, KSplatLoader } from "../GS-Engine";
 
 const KSplatViewer = () => {
-  const file = "/test2.splat";
+  const file = "/ella.ksplat";
   const baseUrl =
     import.meta.env.MODE === "development"
       ? "/models"
