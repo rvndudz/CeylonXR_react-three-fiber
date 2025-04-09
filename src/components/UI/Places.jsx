@@ -159,13 +159,13 @@ const Places = () => {
 
           <BentoTilt
             className="bento-tilt_1 row-span-1 ms-32 md:col-span-1 md:ms-0"
-            onClick={() => navigate("/test")}
+            onClick={() => window.open("/playcanvas-app/index.html", "_blank")}
           >
             <Card
               src="img/test.webp"
               title={<>test</>}
               description="test purposes"
-              isComingSoon={true}
+              isComingSoon={false}
             />
           </BentoTilt>
 
@@ -175,7 +175,7 @@ const Places = () => {
           >
             <Card
               src="img/test2.webp"
-              title={<>test</>}
+              title={<>test2</>}
               description="test purposes"
               isComingSoon={true}
             />
