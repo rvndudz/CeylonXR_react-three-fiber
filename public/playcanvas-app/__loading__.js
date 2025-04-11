@@ -26,8 +26,8 @@ textLogo.onload = function () {
     splash.style.display = 'block';
 };
 
-
-        var container = document.createElement('div');
+   // splash image`
+var container = document.createElement('div');
         container.id = 'progress-bar-container';
         splash.appendChild(container);
 
