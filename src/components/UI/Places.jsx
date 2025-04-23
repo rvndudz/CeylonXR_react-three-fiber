@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { TiLocationArrow } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
+import VoiceAssistant from "./VoiceAssistant";
 
 export const BentoTilt = ({ children, className = "", onClick }) => {
   const [transformStyle, setTransformStyle] = useState("");
@@ -43,7 +44,14 @@ export const BentoTilt = ({ children, className = "", onClick }) => {
   );
 };
 
-export const Card = ({ src, title, description, isComingSoon, onClick }) => {
+export const Card = ({
+  src,
+  title,
+  description,
+  isComingSoon,
+  onClick,
+  showVoiceAssistant,
+}) => {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [hoverOpacity, setHoverOpacity] = useState(0);
   const hoverButtonRef = useRef(null);
@@ -72,6 +80,9 @@ export const Card = ({ src, title, description, isComingSoon, onClick }) => {
         alt={title}
         className="absolute left-0 top-0 size-full object-cover object-center"
       />
+
+      {/* Voice Assistant */}
+      {showVoiceAssistant && <VoiceAssistant />}
 
       {/* Diagonal Gradient Overlay */}
       <div
@@ -117,6 +128,24 @@ export const Card = ({ src, title, description, isComingSoon, onClick }) => {
 
 const Places = () => {
   const navigate = useNavigate();
+
+  // Function to open PlayCanvas with voice assistant
+  const openPlayCanvasWithVoiceAssistant = () => {
+    const playCanvasWindow = window.open(
+      "/playcanvas-app/index.html",
+      "_blank"
+    );
+
+    // When the window loads, inject our voice assistant script
+    if (playCanvasWindow) {
+      playCanvasWindow.addEventListener("load", () => {
+        const script = playCanvasWindow.document.createElement("script");
+        script.src = "/playcanvas-app/voice-assistant.js";
+        playCanvasWindow.document.body.appendChild(script);
+      });
+    }
+  };
+
   return (
     <section className="bg-black pb-52">
       <div className="container mx-auto px-3 md:px-10">
@@ -159,13 +188,14 @@ const Places = () => {
 
           <BentoTilt
             className="bento-tilt_1 row-span-1 ms-32 md:col-span-1 md:ms-0"
-            onClick={() => window.open("/playcanvas-app/index.html", "_blank")}
+            onClick={openPlayCanvasWithVoiceAssistant}
           >
             <Card
               src="img/test.webp"
               title={<>test</>}
               description="test purposes"
               isComingSoon={false}
+              showVoiceAssistant={true}
             />
           </BentoTilt>
 
